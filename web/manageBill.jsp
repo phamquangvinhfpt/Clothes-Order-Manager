@@ -145,7 +145,7 @@
                 </td>
 
                 <td>
-                    <a href="bill.jsp">Detail</a>
+                    <a href="MainController?action=Bill&orderID=<%= order.getOrderID()%>">Detail</a>
                 </td>
             </tr>
 

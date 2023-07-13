@@ -4,6 +4,8 @@
     Author     : Admin
 --%>
 
+<%@page import="sample.shopping.OrderDetail"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -127,6 +129,11 @@
 
     <body>
         <div class="invoice-box">
+            <%
+                List<OrderDetail> list = (List<OrderDetail>) request.getAttribute("LIST_ORDERDETAIL");
+                if (list != null) {
+                    if (!list.isEmpty()) {
+            %>
             <table>
                 <tr class="top">
                     <td colspan="2">
@@ -165,45 +172,51 @@
                 </tr>
 
                 <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}" varStatus = "status">
-                        <tr class="item">
-                            <td>
-                                <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
-                                    <c:if test = "${current.getKey() == details.getId()}"> 
-                                        ${details.getName()}
-                                    </c:if> 
-                                </c:forEach>
+                    <tr class="item">
+                        <td>
+                            <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
+                                <c:if test = "${current.getKey() == details.getId()}"> 
+                                    ${details.getName()}
+                                </c:if> 
+                            </c:forEach>
 
-                            </td>
-                            <td><c:forEach var = "details" items = "${sessionScope.CartDetails}" >
-                                    <c:if test = "${current.getKey() == details.getId()}"> 
-                                        ${details.getPrice()}
-                                    </c:if> 
-                                </c:forEach> (x${current.getValue()})</td>
-                                                        <%-- td hide calculate money --%>
-                            <td style="display: none;"><c:forEach var = "details" items = "${sessionScope.CartDetails}" >
-                                    <c:if test = "${current.getKey() == details.getId()}"> 
-                                        ${details.getPrice() * current.getValue()}
-                                    </c:if> 
-                                </c:forEach></td>
-                        </tr>
+                        </td>
+                        <td><c:forEach var = "details" items = "${sessionScope.CartDetails}" >
+                                <c:if test = "${current.getKey() == details.getId()}"> 
+                                    ${details.getPrice()}
+                                </c:if> 
+                            </c:forEach> (x${current.getValue()})</td>
+                            <%-- td hide calculate money --%>
+                        <td style="display: none;"><c:forEach var = "details" items = "${sessionScope.CartDetails}" >
+                                <c:if test = "${current.getKey() == details.getId()}"> 
+                                    ${details.getPrice() * current.getValue()}
+                                </c:if> 
+                            </c:forEach></td>
+                    </tr>
                 </c:forEach>
                 <tr class="total">
                     <td></td>
 
                     <td>Total: $
-                    <%-- sum all getvalue * price --%>
-                    <c:set var = "total" value = "0"/>
-                    <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}">
-                        <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
-                            <c:if test = "${current.getKey() == details.getId()}"> 
-                                <c:set var = "total" value = "${total + details.getPrice() * current.getValue()}"/>
-                            </c:if> 
+                        <%-- sum all getvalue * price --%>
+                        <c:set var = "total" value = "0"/>
+                        <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}">
+                            <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
+                                <c:if test = "${current.getKey() == details.getId()}"> 
+                                    <c:set var = "total" value = "${total + details.getPrice() * current.getValue()}"/>
+                                </c:if> 
+                            </c:forEach>
                         </c:forEach>
-                    </c:forEach>
-                    ${total}
+                        ${total}
                     </td>
                 </tr>
             </table>
+            <%
+                }
+            %>
         </div>
+        <%
+            }
+        %>
     </body>
 </html>
