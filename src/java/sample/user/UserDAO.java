@@ -128,6 +128,41 @@ public class UserDAO {
         }
         return list;
     }
+    
+    public List<UserDTO> getListUser() throws SQLException, ClassNotFoundException {
+        List<UserDTO> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                ptm = conn.prepareStatement("SELECT userID, name, phone, address, email, roleID FROM tblUser");
+                rs = ptm.executeQuery();
+                while (rs.next()) {
+                    String userID = rs.getString("userID");
+                    String fullName = rs.getString("name");
+                    String roleID = rs.getString("roleID");
+                    String phone = rs.getString("phone");
+                    String email = rs.getString("email");
+                    String address = rs.getString("address");
+                    list.add(new UserDTO(userID, fullName, phone, address, email, roleID, "**"));
+                }
+            }
+        } catch (SQLException | NamingException e) {
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ptm != null) {
+                ptm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return list;
+    }
 
     public boolean deleteUser(String userID) throws SQLException, ClassNotFoundException {
         boolean result = false;
