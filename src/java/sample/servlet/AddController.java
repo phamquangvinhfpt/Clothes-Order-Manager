@@ -26,15 +26,15 @@ public class AddController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = SUCCESS;
         try {
-            boolean Fault_WrongNumberFormat = false;
-            String SearchValue = request.getParameter("SearchValue").trim();
-            request.setAttribute("SearchValue", SearchValue);
+            boolean faultWrongNumberFormat = false;
+            String searchValue = request.getParameter("SearchValue").trim();
+            request.setAttribute("SearchValue", searchValue);
 
-            ArrayList<Clothes> watch = new ArrayList<>();
-            if (!SearchValue.equals("")) {
-                watch = (ArrayList<Clothes>) ClothesDAO.getProductByID(SearchValue);
+            ArrayList<Clothes> clothes = new ArrayList<>();
+            if (!searchValue.equals("")) {
+                clothes = (ArrayList<Clothes>) ClothesDAO.getProductByID(searchValue);
             }
-            request.setAttribute("Watch", watch);
+            request.setAttribute("Watch", clothes);
 
             HttpSession session = request.getSession(false);
             Cart cart = null;
@@ -44,7 +44,7 @@ public class AddController extends HttpServlet {
                     cart = new Cart();
                 }
 
-                for (Clothes t : watch) {
+                for (Clothes t : clothes) {
                     String currentPara = request.getParameter(t.getId() + "_Quantity");
                     if (!currentPara.equals("")) {
                         int currentQuantity = 0;
@@ -53,19 +53,26 @@ public class AddController extends HttpServlet {
                             if (currentQuantity < 1) {
                                 throw new NumberFormatException();
                             }
+                            // Check if the product's quantity is still enough to add more to cart
+                            if (isProductQuantityEnough(request, t.getId(), currentQuantity)) {
+                                cart.addToCart(t.getId(), currentQuantity);
+                            } else {
+                                // Quantity is not enough to add more to cart
+                                //session.setAttribute("", true);
+                                session.setAttribute("NotEnoughQuantity", "The quantity is not enough to add more!");
+                            }
                         } catch (NumberFormatException ex) {
-                            Fault_WrongNumberFormat = true;
-                            request.setAttribute("Fault_WrongNumberFormat", Fault_WrongNumberFormat);
-                        }
-                        if (currentQuantity != -1) {
-                            cart.addToCart(t.getId(), currentQuantity);
+                            faultWrongNumberFormat = true;
+                            request.setAttribute("FaultWrongNumberFormat", faultWrongNumberFormat);
+                        } catch (SQLException | NamingException | ClassNotFoundException ex) {
+                            // Handle any other exceptions that may occur
+                            log("Error at AddController: " + ex.toString());
                         }
                     }
                 }
-
             }
 
-            if (!Fault_WrongNumberFormat) {
+            if (!faultWrongNumberFormat) {
                 session.setAttribute("Cart", cart);
                 ArrayList<Clothes> cartDetails = new ArrayList<>();
                 for (String current : cart.getCart().keySet()) {
@@ -73,23 +80,41 @@ public class AddController extends HttpServlet {
                     try {
                         t = (Clothes) ClothesDAO.getWatch(current);
                     } catch (SQLException ex) {
+                        log("Error at AddController: " + ex.toString());
                     }
                     cartDetails.add(t);
                 }
                 session.setAttribute("CartDetails", cartDetails);
-                request.setAttribute("Success_Purchase", true);
+                request.setAttribute("SuccessPurchase", true);
             }
 
-            Map<Clothes, String> QuantityValues = new HashMap<>();
-            for (Clothes t : watch) {
-                QuantityValues.put(t, request.getParameter(t.getId() + "_Quantity"));
+            Map<Clothes, String> quantityValues = new HashMap<>();
+            for (Clothes t : clothes) {
+                quantityValues.put(t, request.getParameter(t.getId() + "_Quantity"));
             }
-            request.setAttribute("QuantityValues", QuantityValues);
+            request.setAttribute("QuantityValues", quantityValues);
         } catch (SQLException e) {
             log("Error at AddController: " + e.toString());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }
+    }
+
+    private boolean isProductQuantityEnough(HttpServletRequest request, String productId, int quantity) throws SQLException, NamingException, ClassNotFoundException {
+        Clothes product = ClothesDAO.getProduct(productId);
+        return product != null && (product.getQuantity() - getProductQuantityInCart(request, productId)) >= quantity;
+    }
+
+    private int getProductQuantityInCart(HttpServletRequest request, String productId) {
+        HttpSession session = request.getSession(false);
+        Cart cart = null;
+        if (session != null) {
+            cart = (Cart) session.getAttribute("Cart");
+            if (cart != null && cart.getCart().containsKey(productId)) {
+                return cart.getCart().get(productId);
+            }
+        }
+        return 0;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

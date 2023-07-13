@@ -54,6 +54,7 @@
                 <p style="color: red; ">
                     <%= error%>
                 </p>
+                <p id="error" style="color: red;">${NotEnoughQuantity}</p>
 
                 <form action = "AddController" method = "GET" id = "Add" > </form> 
                 <table border="1">

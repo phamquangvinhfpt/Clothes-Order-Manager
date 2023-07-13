@@ -8,6 +8,7 @@ import javax.naming.NamingException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import sample.util.DBUtils;
 
 public class OrderedDAO implements Serializable {
@@ -43,6 +44,40 @@ public class OrderedDAO implements Serializable {
 
         }
         return orderIDs;
+    }
+    
+        public List<Order> getListOrder() throws SQLException, ClassNotFoundException {
+        List<Order> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+
+                ptm = conn.prepareStatement("SELECT orderID, userID, date, total FROM tblOrder");
+                rs = ptm.executeQuery();
+                while (rs.next()) {
+                    String orderID = rs.getString("orderID");
+                    String userID = rs.getString("userID");
+                    Date date = rs.getDate("date");
+                    double total = rs.getDouble("total");
+                    list.add(new Order(orderID, userID, date, total));
+                }
+            }
+        } catch (SQLException | NamingException e) {
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ptm != null) {
+                ptm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return list;
     }
 
     private static String generateOrderID() {

@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.NamingException;
 
-
 public class Cart {
+
     private final Map<String, Integer> cart;
 
     public Map<String, Integer> getCart() {
@@ -25,13 +25,19 @@ public class Cart {
     public void addToCart(String tea, int quantity) throws SQLException, NamingException, ClassNotFoundException {
         if (cart != null) {
             int totalQuantity = ClothesDAO.getProduct(tea).getQuantity();
-        if (cart.containsKey(tea)) {
-            quantity = cart.get(tea) + quantity;
-        }
-        if (quantity > totalQuantity) {
-            quantity = totalQuantity;
-        }
-        cart.put(tea, quantity);
+            if (cart.containsKey(tea)) {
+                int currentQuantity = cart.get(tea);
+                int newQuantity = currentQuantity + quantity;
+                if (newQuantity > totalQuantity) {
+                    newQuantity = totalQuantity; // Adjust the quantity to the available quantity
+                }
+                cart.put(tea, newQuantity);
+            } else {
+                if (quantity > totalQuantity) {
+                    quantity = totalQuantity; // Adjust the quantity to the available quantity
+                }
+                cart.put(tea, quantity);
+            }
         }
     }
 
