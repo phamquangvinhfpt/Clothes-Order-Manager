@@ -68,7 +68,9 @@
                             <th>Image</th>
                             <th>Category ID</th>
                             <th>Purchase Quantity</th>
-                            <th>Delete</th>
+                                <c:if test="${sessionScope.AD != null}">
+                                <th>Delete</th>
+                                </c:if>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,9 +86,11 @@
                                 <td>
                                     <input type = "number" min="1" max="${Watch.getQuantity()}" name = "${Watch.getId()}_Quantity" value = "${requestScope.QuantityValues.get(Watch)}" form = "Add">    
                                 </td>
-                                <td>
-                                    <a href="MainController?action=RemoveClothes&id=${Watch.getId()}&search=${requestScope.SearchValue}">Delete</a>
-                                </td>
+                                <c:if test="${sessionScope.AD != null}">
+                                    <td>
+                                        <a href="MainController?action=RemoveClothes&id=${Watch.getId()}&search=${requestScope.SearchValue}">Delete</a>
+                                    </td>
+                                </c:if>
                             </tr>
                         </c:forEach>
                     <td></td>

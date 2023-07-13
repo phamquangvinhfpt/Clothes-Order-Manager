@@ -43,6 +43,11 @@
                         <a class="nav-link" href="addProduct.jsp">Add Product</a>
                     </li>
                 </c:if>    
+                <c:if test="${sessionScope.AD != null}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="manageBill.jsp">Manage Bill</a>
+                    </li>
+                </c:if>
 
                 <c:if test="${sessionScope.LOGIN_USER != null}" >
                     <li class="nav-item">
