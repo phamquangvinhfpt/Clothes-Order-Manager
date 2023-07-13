@@ -23,7 +23,7 @@ public class UserDAO {
     private static final String CHECK = "SELECT userID FROM tblUser WHERE userID = ?";
     private static final String INSERT = "INSERT INTO tblUser (userID, name, phone, address, email, roleID, password) VALUES(?,?,?,?,?,?,?)";
 
-    public static UserDTO checkLogin(String userID, String password) throws SQLException {
+    public static UserDTO checkLogin(String userID, String password) throws SQLException, ClassNotFoundException {
         UserDTO user = null;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -92,7 +92,7 @@ public class UserDAO {
         return check;
     }
 
-    public List<UserDTO> getListUser(String search) throws SQLException {
+    public List<UserDTO> getListUser(String search) throws SQLException, ClassNotFoundException {
         List<UserDTO> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -129,7 +129,7 @@ public class UserDAO {
         return list;
     }
 
-    public boolean deleteUser(String userID) throws SQLException {
+    public boolean deleteUser(String userID) throws SQLException, ClassNotFoundException {
         boolean result = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -154,7 +154,7 @@ public class UserDAO {
         return result;
     }
 
-    public boolean updateUser(UserDTO user) throws SQLException {
+    public boolean updateUser(UserDTO user) throws SQLException, ClassNotFoundException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -185,7 +185,7 @@ public class UserDAO {
         return check;
     }
 
-    public static boolean insert(String userID, String fullName, String roleID, String phone, String address, String email, String password) throws SQLException {
+    public static boolean insert(String userID, String fullName, String roleID, String phone, String address, String email, String password) throws SQLException, ClassNotFoundException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -215,7 +215,7 @@ public class UserDAO {
         return check;
     }
 
-    public List<UserDTO> getAllUser() throws SQLException {
+    public List<UserDTO> getAllUser() throws SQLException, ClassNotFoundException {
         List<UserDTO> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -245,7 +245,7 @@ public class UserDAO {
         return list;
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDAO dao = new UserDAO();
         List<UserDTO> user = dao.getAllUser();
 

@@ -18,15 +18,18 @@ public class ClothesDAO {
 
     private static final String CATE = "SELECT categoryID, name FROM tblCategories";
     private static final String PROD = "SELECT productID, name, price, quantity, images, categoryID FROM tblProduct";
-    private static final String GETBYCID = "SELECT productID, [dbo].[tblProduct].name, price, quantity, images, [dbo].[tblProduct].categoryID , [dbo].[tblCategories].name FROM tblProduct, [dbo].[tblCategories] \r\n" + //
+    private static final String GETBYCID = "SELECT productID, [dbo].[tblProduct].name, price, quantity, images, [dbo].[tblProduct].categoryID , [dbo].[tblCategories].name FROM tblProduct, [dbo].[tblCategories] \r\n"
+            + //
             "WHERE productID like ? and [dbo].[tblProduct].categoryID = [dbo].[tblCategories].categoryID";
-    private static final String GETBYNAME = "SELECT productID, [dbo].[tblProduct].name, price, quantity, images, [dbo].[tblProduct].categoryID , [dbo].[tblCategories].name FROM tblProduct, [dbo].[tblCategories] \r\n" + //
+    private static final String GETBYNAME = "SELECT productID, [dbo].[tblProduct].name, price, quantity, images, [dbo].[tblProduct].categoryID , [dbo].[tblCategories].name FROM tblProduct, [dbo].[tblCategories] \r\n"
+            + //
             "WHERE [dbo].[tblProduct].name like ? and [dbo].[tblProduct].categoryID = [dbo].[tblCategories].categoryID";
     private static final String CHECK = "SELECT productID from tblProduct WHERE productID = ?";
     private static final String INSERT = "INSERT INTO tblProduct (productID, name, price, quantity, images, categoryID) VALUES(?,?,?,?,?,?)";
     private static final String REMOVE = "DELETE FROM tblProduct WHERE productID = ?";
     private static final String GETCATE = "select name from [dbo].[tblCategories] where [categoryID] = ?";
-    public List<Category> getAllCategory() throws SQLException {
+
+    public List<Category> getAllCategory() throws SQLException, ClassNotFoundException {
         List<Category> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -58,7 +61,7 @@ public class ClothesDAO {
         return list;
     }
 
-    public boolean insert(String id, String name, String price, String quantity, String images, String category) throws SQLException {
+    public boolean insert(String id, String name, String price, String quantity, String images, String category) throws SQLException, ClassNotFoundException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -87,7 +90,7 @@ public class ClothesDAO {
         return check;
     }
 
-    public static List<Clothes> getProductByID(String search) throws SQLException {
+    public static List<Clothes> getProductByID(String search) throws SQLException, ClassNotFoundException {
         List<Clothes> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -96,13 +99,13 @@ public class ClothesDAO {
             if (search.equalsIgnoreCase("all")) {
                 search = "";
                 conn = DBUtils.getConnection();
-            ptm = conn.prepareStatement(GETBYCID);
-            ptm.setString(1, "%" + search + "%");
-            rs = ptm.executeQuery();
-            while (rs.next()) {
-                list.add(new Clothes(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7)));
-            }
-            }else {
+                ptm = conn.prepareStatement(GETBYCID);
+                ptm.setString(1, "%" + search + "%");
+                rs = ptm.executeQuery();
+                while (rs.next()) {
+                    list.add(new Clothes(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7)));
+                }
+            } else {
                 //search by name
                 conn = DBUtils.getConnection();
                 ptm = conn.prepareStatement(GETBYNAME);
@@ -111,7 +114,7 @@ public class ClothesDAO {
                 while (rs.next()) {
                     list.add(new Clothes(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7)));
                 }
-            ptm = conn.prepareStatement(GETBYCID);
+                ptm = conn.prepareStatement(GETBYCID);
             }
         } catch (SQLException | NamingException e) {
         } finally {
@@ -128,7 +131,7 @@ public class ClothesDAO {
         return list;
     }
 
-    public boolean checkDuplicate(String id) throws SQLException {
+    public boolean checkDuplicate(String id) throws SQLException, ClassNotFoundException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -159,7 +162,7 @@ public class ClothesDAO {
         return check;
     }
 
-    public List<Clothes> getAllProduct() throws SQLException {
+    public List<Clothes> getAllProduct() throws SQLException, ClassNotFoundException {
         List<Clothes> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -271,7 +274,7 @@ public class ClothesDAO {
 
     }
 
-    public boolean removeWatch(String id) throws SQLException {
+    public boolean removeWatch(String id) throws SQLException, ClassNotFoundException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement ptm = null;
@@ -294,7 +297,7 @@ public class ClothesDAO {
         }
         return check;
     }
-    
+
     public static Clothes getProduct(String ID) throws
             SQLException, NamingException, ClassNotFoundException {
         String SQLQuery = "SELECT productID, name, price, quantity, images, categoryID "
