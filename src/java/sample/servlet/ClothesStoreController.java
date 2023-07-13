@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ClothesStoreController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException, SQLException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
         String url = "shopping.jsp";
       try{
@@ -67,6 +67,8 @@ public class ClothesStoreController extends HttpServlet {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(ClothesStoreController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ClothesStoreController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -84,6 +86,8 @@ public class ClothesStoreController extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
+            Logger.getLogger(ClothesStoreController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClothesStoreController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
