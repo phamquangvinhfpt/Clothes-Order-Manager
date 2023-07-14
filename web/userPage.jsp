@@ -143,6 +143,7 @@
                     <th>Email</th>
                     <th>Role ID</th>
                     <th>Password</th>
+                    <th>Update</th>
                 </tr>
             </thead>
             <tbody>
@@ -153,17 +154,21 @@
                 <tr>
                     <td><%= count++%></td>
                     <td><%= loginUser.getUserID()%></td>
-                    <td><%= loginUser.getFullName()%></td>
+                    <td><input type="text" name="fullName" value="<%= loginUser.getFullName()%>" /></td>
 
-                    <td><%= loginUser.getPhone()%></td>
+                    <td><input type="text" name="phone" value="<%= loginUser.getPhone()%>" /></td>
 
-                    <td><%= loginUser.getAddress()%></td>
+                    <td><input type="text" name="address" value="<%= loginUser.getAddress()%>" /></td>
 
-                    <td><%= loginUser.getEmail()%></td>
+                    <td><input type="text" name="email" value="<%= loginUser.getEmail()%>" /></td>
 
-                    <td><%= loginUser.getRoleID()%></td>
+                    <td><input type="text" name="roleID" value="<%= loginUser.getRoleID()%>" readonly/></td>
 
-                    <td><%= loginUser.getPassword()%></td>
+                    <td><input type="password" name="password" value="<%= loginUser.getPassword()%>"/></td>
+                    <td>
+                        <input type="submit" name="action" value="Update" />
+                        <input type="hidden" name="userID" value="<%= loginUser.getUserID()%>" />
+                    </td>
                 </tr>
             </tbody>
         </table>
