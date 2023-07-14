@@ -64,7 +64,8 @@ public class OrderDetailDAO implements Serializable {
             conn = DBUtils.getConnection();
             if (conn != null) {
 
-                ptm = conn.prepareStatement("SELECT orderID, productID, price, quantity FROM tblOrderDetail");
+                ptm = conn.prepareStatement("SELECT orderID, productID, price, quantity FROM tblOrderDetail WHERE orderID like ?");
+                ptm.setString(1, "%" + id + "%");
                 rs = ptm.executeQuery();
                 while (rs.next()) {
                     String orderID = rs.getString("orderID");
