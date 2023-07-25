@@ -4,6 +4,8 @@
     Author     : Admin
 --%>
 
+<%@page import="sample.shopping.OrderDetail"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -127,44 +129,45 @@
 
     <body>
         <div class="invoice-box">
+
             <table>
                 <tr class="top">
                     <td colspan="2">
                     </td>
                 </tr>
+                <c:if test="${sessionScope.AD == null}">
+                    <tr class="information">
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td>Name: ${sessionScope.LOGIN_USER.getFullName()}<br/>
+                                        Phone: ${sessionScope.LOGIN_USER.getPhone()}<br/>
+                                        Address: ${sessionScope.LOGIN_USER.getAddress()}<br/>
+                                        Email: ${sessionScope.LOGIN_USER.getEmail()}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-                <tr class="information">
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td>Name: ${sessionScope.LOGIN_USER.getFullName()}<br/>
-                                    Phone: ${sessionScope.LOGIN_USER.getPhone()}<br/>
-                                    Address: ${sessionScope.LOGIN_USER.getAddress()}<br/>
-                                    Email: ${sessionScope.LOGIN_USER.getEmail()}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+                    <tr class="heading">
+                        <td>Payment Method</td>
 
-                <tr class="heading">
-                    <td>Payment Method</td>
+                        <td>Check #</td>
+                    </tr>
 
-                    <td>Check #</td>
-                </tr>
+                    <tr class="details">
+                        <td>Check</td>
 
-                <tr class="details">
-                    <td>Check</td>
+                        <td>1000</td>
+                    </tr>
 
-                    <td>1000</td>
-                </tr>
+                    <tr class="heading">
+                        <td>Item</td>
+                        <td>Price</td>
+                    </tr>
 
-                <tr class="heading">
-                    <td>Item</td>
-                    <td>Price</td>
-                </tr>
-
-                <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}" varStatus = "status">
+                    <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}" varStatus = "status">
                         <tr class="item">
                             <td>
                                 <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
@@ -179,31 +182,92 @@
                                         ${details.getPrice()}
                                     </c:if> 
                                 </c:forEach> (x${current.getValue()})</td>
-                                                        <%-- td hide calculate money --%>
+                                <%-- td hide calculate money --%>
                             <td style="display: none;"><c:forEach var = "details" items = "${sessionScope.CartDetails}" >
                                     <c:if test = "${current.getKey() == details.getId()}"> 
                                         ${details.getPrice() * current.getValue()}
                                     </c:if> 
                                 </c:forEach></td>
                         </tr>
-                </c:forEach>
-                <tr class="total">
-                    <td></td>
-
-                    <td>Total: $
-                    <%-- sum all getvalue * price --%>
-                    <c:set var = "total" value = "0"/>
-                    <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}">
-                        <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
-                            <c:if test = "${current.getKey() == details.getId()}"> 
-                                <c:set var = "total" value = "${total + details.getPrice() * current.getValue()}"/>
-                            </c:if> 
-                        </c:forEach>
                     </c:forEach>
-                    ${total}
+                    <tr class="total">
+                        <td></td>
+
+                        <td>Total: $
+                            <%-- sum all getvalue * price --%>
+                            <c:set var = "total" value = "0"/>
+                            <c:forEach var = "current" items = "${sessionScope.Cart.getCart()}">
+                                <c:forEach var = "details" items = "${sessionScope.CartDetails}" >
+                                    <c:if test = "${current.getKey() == details.getId()}"> 
+                                        <c:set var = "total" value = "${total + details.getPrice() * current.getValue()}"/>
+                                    </c:if> 
+                                </c:forEach>
+                            </c:forEach>
+                            ${total}
+                        </td>
+                    </tr>
+                </table>
+            </c:if>
+
+        </div>
+
+        <%
+            List<OrderDetail> list = (List<OrderDetail>) request.getAttribute("LIST_ORDERDETAIL");
+            if (list != null) {
+                if (!list.isEmpty()) {
+        %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Order ID</th>
+                    <th>Product ID</th>
+
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    int count = 1;
+                    for (OrderDetail ord : list) {
+
+                %>
+            <form action="MainController">
+                <tr>
+                    <td><%= count++%></td>
+                    <td><%= ord.getOrderID()%></td>
+                    <td>
+                        <%= ord.getProductID()%>
+                    </td>
+
+                    <td>
+                        <%= ord.getPrice()%>
+                    </td>
+
+                    <td>
+                        <%= ord.getQuantity()%>
+                    </td>
+
+                    <td>
+                        <a href="MainController?action=DeleteDetail&orderID=<%= ord.getOrderID()%>">Delete</a>
                     </td>
                 </tr>
-            </table>
-        </div>
-    </body>
+
+
+            </form>
+
+            <%
+                }
+            %>
+        </tbody>
+    </table>
+    <%
+        }
+    %>
+    <%
+        }
+    %>
+</body>
 </html>

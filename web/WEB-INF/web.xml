@@ -64,6 +64,10 @@
         <servlet-name>RemoveController</servlet-name>
         <servlet-class>sample.servlet.RemoveController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BillController</servlet-name>
+        <servlet-class>sample.servlet.BillController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>MainController</servlet-name>
         <url-pattern>/MainController</url-pattern>
@@ -127,6 +131,10 @@
     <servlet-mapping>
         <servlet-name>RemoveController</servlet-name>
         <url-pattern>/RemoveController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BillController</servlet-name>
+        <url-pattern>/BillController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -45,8 +45,8 @@ public class OrderedDAO implements Serializable {
         }
         return orderIDs;
     }
-    
-        public List<Order> getListOrder() throws SQLException, ClassNotFoundException {
+
+    public List<Order> getListOrder() throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ptm = null;

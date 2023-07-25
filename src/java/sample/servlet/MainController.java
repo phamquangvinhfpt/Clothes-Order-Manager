@@ -64,6 +64,8 @@ public class MainController extends HttpServlet {
                 url = REMOVE;
             } else if ("Buy More".equals(action)) {
                 url = BUYMORE;
+            } else if("Bill".equals(action)){
+                url = "BillController";
             }
             else {
                 session.setAttribute("Error", "Function is not supported !");
